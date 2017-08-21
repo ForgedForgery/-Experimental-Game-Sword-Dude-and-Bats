@@ -83,6 +83,7 @@ public class PlayerControllerV2 : MonoBehaviour {
             StartCoroutine(OnCompleteAnimation());
             map.n += 1;
             n += 1;
+            anim.transform.parent.position = new Vector3(n * 0.5f * 4, anim.transform.parent.position.y, anim.transform.parent.position.z);
             cam.moveCamToX += 2f;
 
             if (attackCD > 0)
@@ -97,20 +98,10 @@ public class PlayerControllerV2 : MonoBehaviour {
     {
         anim.Update(0f);
 
-        bool xOffset = false;
-        while (anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 0.99f && (moving || attacking))
+        while (anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 0.975f && (moving || attacking))
         {
             //Debug.Log(anim.GetCurrentAnimatorStateInfo(0).IsName("StickAttack") + " " + anim.GetCurrentAnimatorStateInfo(0).normalizedTime);
-
-            if (anim.GetCurrentAnimatorStateInfo(0).IsName("Walk"))
-                xOffset = true;
-            
             yield return null;
-        }
-
-        if (xOffset == true)
-        {
-            anim.transform.parent.position = new Vector3(anim.transform.parent.position.x + 2f, anim.transform.parent.position.y, anim.transform.parent.position.z);
         }
 
         Debug.Log(anim.GetCurrentAnimatorStateInfo(0).normalizedTime);
