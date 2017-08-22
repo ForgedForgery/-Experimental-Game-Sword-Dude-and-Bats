@@ -10,6 +10,8 @@ public class PlayerControllerV2 : MonoBehaviour {
     Animator anim;
     Rigidbody2D rb;
     Transform player;
+    AudioSource[] audiosource;
+    int swordSwingIndex;
     public GameController map;
     public Slider timerSlider;
     public Slider attackCDSlider;
@@ -32,6 +34,10 @@ public class PlayerControllerV2 : MonoBehaviour {
         rb = GetComponent<Rigidbody2D>();
         player = GetComponentInParent<Transform>();
         attackCDSliderText = attackCDSlider.GetComponentInChildren<Text>();
+
+        ///0-2 footsteps, 3 sword swing
+        audiosource = GetComponentsInChildren<AudioSource>();
+        swordSwingIndex = 3;
     }
 
     void Update()
@@ -98,7 +104,7 @@ public class PlayerControllerV2 : MonoBehaviour {
     {
         anim.Update(0f);
 
-        while (anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 0.975f && (moving || attacking))
+        while (anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= 0.91f && (moving || attacking))
         {
             //Debug.Log(anim.GetCurrentAnimatorStateInfo(0).IsName("StickAttack") + " " + anim.GetCurrentAnimatorStateInfo(0).normalizedTime);
             yield return null;
@@ -113,5 +119,16 @@ public class PlayerControllerV2 : MonoBehaviour {
         {
             StartCoroutine(map.EnemyAttackAnimation());
         }
+    }
+
+    public void PlayFootsteps()
+    {
+        int i = Random.Range(0, swordSwingIndex);
+        audiosource[i].Play();
+    }
+
+    void PlaySwordSwing()
+    {
+        audiosource[swordSwingIndex].Play();
     }
 }
