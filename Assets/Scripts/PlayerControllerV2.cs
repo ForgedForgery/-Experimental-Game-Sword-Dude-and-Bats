@@ -121,7 +121,7 @@ public class PlayerControllerV2 : MonoBehaviour {
         }
     }
 
-    public void PlayFootsteps()
+    void PlayFootsteps()
     {
         int i = Random.Range(0, swordSwingIndex);
         audiosource[i].Play();
@@ -130,5 +130,10 @@ public class PlayerControllerV2 : MonoBehaviour {
     void PlaySwordSwing()
     {
         audiosource[swordSwingIndex].Play();
+    }
+
+    public void PlayGettingHit()
+    {
+        audiosource[swordSwingIndex+1].Play();
     }
 }

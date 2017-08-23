@@ -116,6 +116,7 @@ public class GameController : MonoBehaviour {
             Debug.Log("Damageable Check");
             if (damageable == true)
             {
+                StartCoroutine(enemies[n + 1].GetComponentInChildren<BatController>().OnDie());
                 level[n + 1] = 0;
                 return 0;
             }
@@ -150,6 +151,7 @@ public class GameController : MonoBehaviour {
 
         float minDamageableSec = 0;
         float maxDamageableSec = 0;
+        float hitTimer = 0;
 
         // The window at which an enemy is damageable
         // timing varies by enemy type
@@ -157,14 +159,17 @@ public class GameController : MonoBehaviour {
         {
             minDamageableSec = 0.40f;
             maxDamageableSec = 0.7f;
+            hitTimer = maxDamageableSec;
         }
         else if (level[n + 1] == 2)
         {
             minDamageableSec = 0.2333f;
             maxDamageableSec = 0.6f;
+            hitTimer = maxDamageableSec + 0.1f;
         }
 
         float currAnimTime;
+        bool hit = false;
         while (level[n + 1] != 0 && anim.GetCurrentAnimatorStateInfo(0).IsTag("Attack"))
         {
 
@@ -178,6 +183,12 @@ public class GameController : MonoBehaviour {
             {
                 damageable = false;
             }
+
+            if (!hit && currAnimTime >= hitTimer)
+            {
+                hit = true;
+                player.PlayGettingHit();
+            }
             yield return null;
         }
         damageable = false;
@@ -185,7 +196,8 @@ public class GameController : MonoBehaviour {
 
         //Debug.Log("Ended");
 
-        Destroy(enemies[n + 1]);
+        if(!anim.GetComponents<AudioSource>()[1].isPlaying)
+            Destroy(enemies[n + 1]);
     }
 
     public void doGameOver()
