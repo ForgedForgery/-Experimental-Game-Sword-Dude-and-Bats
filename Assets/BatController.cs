@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class BatController : MonoBehaviour {
 
-    AudioSource[] screech;
+    AudioSource[] audioSource;
 
 	// Use this for initialization
 	void Start () {
-        screech = GetComponents<AudioSource>();
+        audioSource = GetComponents<AudioSource>();
 		
 	}
 	
@@ -19,14 +19,14 @@ public class BatController : MonoBehaviour {
 
     void PlayScreech()
     {
-        screech[0].Play();
+        audioSource[0].Play();
     }
 
     public IEnumerator OnDie()
     {
-        screech[1].Play();
+        audioSource[1].Play();
         gameObject.GetComponent<Animator>().enabled = false;
-        while (screech[1].isPlaying)
+        while (audioSource[1].isPlaying)
         {
             yield return null;
         }

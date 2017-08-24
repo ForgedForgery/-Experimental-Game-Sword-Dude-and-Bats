@@ -22,7 +22,7 @@ public class PlayerControllerV2 : MonoBehaviour {
     float timer = 0f; // real time based CD for every turn
     public float globalCD = 0f; // real time based CD for every action
     int attackCD = 0; // "turn" based CD
-    int n;  // current position of player on level
+    public int n;  // current position of player on level
 
     public bool moving = false;
     bool attacking = false;
@@ -38,6 +38,8 @@ public class PlayerControllerV2 : MonoBehaviour {
         ///0-2 footsteps, 3 sword swing
         audiosource = GetComponentsInChildren<AudioSource>();
         swordSwingIndex = 3;
+
+        cam.moveCamToX += 2f * n;
     }
 
     void Update()
@@ -134,6 +136,11 @@ public class PlayerControllerV2 : MonoBehaviour {
 
     public void PlayGettingHit()
     {
-        audiosource[swordSwingIndex+1].Play();
+        audiosource[swordSwingIndex + 1].Play();
+    }
+
+    public void PlayHit()
+    {
+        audiosource[swordSwingIndex + 2].Play();
     }
 }

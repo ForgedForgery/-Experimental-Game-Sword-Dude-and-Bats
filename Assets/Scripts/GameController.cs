@@ -19,8 +19,8 @@ public class GameController : MonoBehaviour {
     bool damageable = false;
 
     void Start () {
-
-        int levelMax = 40;
+        n = player.n;
+        int levelMax = 100;
         // build level
         level = new int[levelMax];
         enemies = new GameObject[levelMax];
@@ -33,6 +33,11 @@ public class GameController : MonoBehaviour {
         level[9] = 1;
         level[18] = 1;
         level[21] = 2;
+        level[32] = 2;
+        level[41] = 1;
+        level[43] = 2;
+        level[44] = 1;
+        level[46] = 2;
 
         // spawn everything
         for (int i = 0; i < level.Length; i++)
@@ -77,10 +82,10 @@ public class GameController : MonoBehaviour {
 
         for (int i = 1; i <= 3; i++) // check for every danger type in front
         {
-            if (level[n + 3] == i)
+            if (level[n + 3] == i && distanceToDanger != 2 && distanceToDanger != 1)
                 distanceToDanger = 3;
 
-            if (level[n + 2] == i)
+            if (level[n + 2] == i && distanceToDanger != 1)
                 distanceToDanger = 2;
 
             if (level[n + 1] == i)
@@ -117,6 +122,7 @@ public class GameController : MonoBehaviour {
             if (damageable == true)
             {
                 StartCoroutine(enemies[n + 1].GetComponentInChildren<BatController>().OnDie());
+                player.PlayHit();
                 level[n + 1] = 0;
                 return 0;
             }
@@ -157,7 +163,7 @@ public class GameController : MonoBehaviour {
         // timing varies by enemy type
         if (level[n + 1] == 1)
         {
-            minDamageableSec = 0.40f;
+            minDamageableSec = 0.4f;
             maxDamageableSec = 0.7f;
             hitTimer = maxDamageableSec;
         }
@@ -165,7 +171,7 @@ public class GameController : MonoBehaviour {
         {
             minDamageableSec = 0.2333f;
             maxDamageableSec = 0.6f;
-            hitTimer = maxDamageableSec + 0.1f;
+            hitTimer = maxDamageableSec;
         }
 
         float currAnimTime;

@@ -12,13 +12,14 @@ public class BackGrassBuilder : MonoBehaviour {
     float counter = 0;
     int stuffIndex = 0;
     int stuffPos = 1;
+    public float startPos;
 
     static float backGrassWidth = 4 * 1.28f;
     static float _3NWidth = 3 * 2f;
 
 
 	// Use this for initialization
-	void Start () {
+	void Start () {;
 
         for (int i = 0; i < stuff.Length; i++)
         {
@@ -34,7 +35,7 @@ public class BackGrassBuilder : MonoBehaviour {
         stuff[i].transform.parent = transform;
         stuff[i].transform.name = "Back Grass " + i;
         stuff[i].transform.localScale = new Vector3(1f, 1f, 1f);
-        stuff[i].transform.localPosition = new Vector3(-2 + pos * 1.28f, 0f, 0f);
+        stuff[i].transform.localPosition = new Vector3(startPos + pos * 1.28f, 0f, 0f);
     }
 
     private void Update()
