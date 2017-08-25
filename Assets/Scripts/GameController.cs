@@ -38,6 +38,14 @@ public class GameController : MonoBehaviour {
         level[43] = 2;
         level[44] = 1;
         level[46] = 2;
+        level[49] = 2;
+        level[51] = 2;
+        level[52] = 1;
+        level[53] = 1;
+        level[57] = 1;
+        level[58] = 1;
+        level[62] = 2;
+        level[65] = 2;
 
         // spawn everything
         for (int i = 0; i < level.Length; i++)
