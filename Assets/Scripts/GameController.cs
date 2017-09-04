@@ -1,15 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class GameController : MonoBehaviour {
+
+    private static GameController _gameController;
+
+    public static GameController main { get { return _gameController; } }
 
     public GameObject highBatPrefab;
     public GameObject lowBatPrefab;
     public GameObject endPrefab;
     public PlayerControllerV2 player;
 
-    public int n = 0; //position counter
+    public int n = 0; //possition counter
     public int distanceToDanger;
     public int[] level;
     public GameObject[] enemies;
@@ -17,6 +22,21 @@ public class GameController : MonoBehaviour {
 
     public bool enemyAttack = false;
     bool damageable = false;
+
+    public event Action OnDied;
+    public event Action OnRestart;
+
+    private void Awake()
+    {
+        if (_gameController != null && _gameController != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _gameController = this;
+        }
+    }
 
     void Start () {
         n = player.n;
@@ -216,6 +236,13 @@ public class GameController : MonoBehaviour {
 
     public void doGameOver()
     {
+        OnDied();
+        GetComponentsInChildren<AudioSource>()[1].Stop();
+    }
 
+    public void doGameRestart()
+    {
+        OnRestart();
+        GetComponentsInChildren<AudioSource>()[1].Play();
     }
 }

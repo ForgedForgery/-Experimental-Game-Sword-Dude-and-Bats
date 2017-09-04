@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerControllerV2 : MonoBehaviour {
 
@@ -13,7 +14,6 @@ public class PlayerControllerV2 : MonoBehaviour {
     AudioSource[] audiosource;
     int swordSwingIndex;
     public GameController map;
-    public Slider timerSlider;
     public Slider attackCDSlider;
     Text attackCDSliderText;
     public CamController cam;
@@ -26,7 +26,7 @@ public class PlayerControllerV2 : MonoBehaviour {
 
     public bool moving = false;
     bool attacking = false;
-
+    bool dead = false;
 
     void Start ()
     {
@@ -45,7 +45,6 @@ public class PlayerControllerV2 : MonoBehaviour {
     void Update()
     {
 
-        timerSlider.value = timer;
         attackCDSlider.value = attackCD;
         attackCDSliderText.text = attackCD.ToString();
 
@@ -64,6 +63,17 @@ public class PlayerControllerV2 : MonoBehaviour {
         {
             timer = 2f;
             globalCD -= Time.deltaTime;
+        }
+
+        if (dead == true)
+        {
+            globalCD = globalCDSet;
+            attackCD = 2;
+
+            if (Input.anyKeyDown)
+            {
+                SceneManager.LoadScene(1);
+            }
         }
 
         // attack when spacebar pressed
@@ -137,6 +147,8 @@ public class PlayerControllerV2 : MonoBehaviour {
     public void PlayGettingHit()
     {
         audiosource[swordSwingIndex + 1].Play();
+        GameController.main.doGameOver();
+        dead = true;
     }
 
     public void PlayHit()
