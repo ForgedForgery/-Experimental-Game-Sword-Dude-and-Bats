@@ -21,6 +21,7 @@ public class GameController : MonoBehaviour {
     int enemyIndex = 0;
 
     public bool enemyAttack = false;
+    public bool rushMode = false;
     bool damageable = false;
 
     public event Action OnDied;
@@ -44,7 +45,7 @@ public class GameController : MonoBehaviour {
         // build level
         level = new int[levelMax];
         enemies = new GameObject[levelMax];
-        // 9 = finish/level complete, 1 = high bat, 2 = low bat
+        // 9 = finish/level complete, 1 = high bat, 2 = low bat, 7 = rush mode on, 8 = rush mode off
         level[level.Length - 1] = 9;
 
         level[2] = 2;
@@ -66,6 +67,8 @@ public class GameController : MonoBehaviour {
         level[58] = 1;
         level[62] = 2;
         level[65] = 2;
+        level[68] = 7;
+        level[95] = 8;
 
         // spawn everything
         for (int i = 0; i < level.Length; i++)
@@ -85,22 +88,31 @@ public class GameController : MonoBehaviour {
 
     void Update()
     {
-        if (IsNextNDanger() && !enemyAttack && enemies[n + 1] != null && player.moving)
+        if (!rushMode)
         {
-            enemyAttack = true;
+            if (IsNextNDanger() && !enemyAttack && enemies[n + 1] != null && player.moving)
+            {
+                enemyAttack = true;
+            }
+
+            if (IsNextNDanger() && enemies[n + 1] != null)
+            {
+                if (damageable)
+                {
+                    enemies[n + 1].GetComponentInChildren<SpriteRenderer>().color = Color.red;
+                }
+                else if (!damageable)
+                {
+                    enemies[n + 1].GetComponentInChildren<SpriteRenderer>().color = Color.white;
+                }
+            }
         }
 
-        if (IsNextNDanger() && enemies[n + 1] != null)
-        {
-            if (damageable)
-            {
-                enemies[n + 1].GetComponentInChildren<SpriteRenderer>().color = Color.red;
-            }
-            else if (!damageable)
-            {
-                enemies[n + 1].GetComponentInChildren<SpriteRenderer>().color = Color.white;
-            }
-        }
+        if (level[n] == 7)
+            rushMode = true;
+
+        if (level[n] == 8)
+            rushMode = false;
 	}
 
 
@@ -144,7 +156,7 @@ public class GameController : MonoBehaviour {
     {
         DistanceToDanger();
 
-        if (distanceToDanger == 1)
+        if (distanceToDanger == 1 && rushMode == false)
         {
             Debug.Log("Damageable Check");
             if (damageable == true)
@@ -158,6 +170,13 @@ public class GameController : MonoBehaviour {
             {
                 return 2;
             }
+        }
+        else if (rushMode == true) // rush mode hit confirm goes in here
+        {
+            // BatSpawner checks if the any of the Bat(s) are damageable
+            // BatSpawner.CheckForHit();
+
+            return 0;
         }
         else
         {

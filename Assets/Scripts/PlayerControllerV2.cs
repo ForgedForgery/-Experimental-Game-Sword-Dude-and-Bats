@@ -27,6 +27,7 @@ public class PlayerControllerV2 : MonoBehaviour {
     public bool moving = false;
     bool attacking = false;
     bool dead = false;
+    public bool invincible = false;
 
     void Start ()
     {
@@ -146,9 +147,12 @@ public class PlayerControllerV2 : MonoBehaviour {
 
     public void PlayGettingHit()
     {
-        audiosource[swordSwingIndex + 1].Play();
-        GameController.main.doGameOver();
-        dead = true;
+        if (!invincible)
+        {
+            audiosource[swordSwingIndex + 1].Play();
+            GameController.main.doGameOver();
+            dead = true;
+        }
     }
 
     public void PlayHit()
