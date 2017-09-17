@@ -12,9 +12,13 @@ public class GameController : MonoBehaviour {
     public GameObject highBatPrefab;
     public GameObject lowBatPrefab;
     public GameObject endPrefab;
+    public GameObject autoBatPrefab;
+    public Transform batSpawnerTransform;
     public PlayerControllerV2 player;
 
-    public int n = 0; //possition counter
+    private BatSpawner rushModeBatSpawner;
+
+    public int n = 0; //position counter
     public int distanceToDanger;
     public int[] level;
     public GameObject[] enemies;
@@ -40,6 +44,10 @@ public class GameController : MonoBehaviour {
     }
 
     void Start () {
+
+
+        rushModeBatSpawner = new BatSpawner(autoBatPrefab, batSpawnerTransform, player.transform);
+
         n = player.n;
         int levelMax = 100;
         // build level
@@ -108,13 +116,43 @@ public class GameController : MonoBehaviour {
             }
         }
 
+        //checks whether a rush mode area is entered or left
         if (level[n] == 7)
             rushMode = true;
-
         if (level[n] == 8)
             rushMode = false;
-	}
 
+        // turns the rush mode spawner on or off
+        if (rushMode == true && rushModeBatSpawner.State == BatSpawner.BSState.OFF)
+        {
+            rushModeBatSpawner.TurnOn();
+        }
+        else if (rushMode == false)
+        {
+            rushModeBatSpawner.TurnOff();
+        }
+
+        // execute this when spawner is on
+        if (rushModeBatSpawner.State != BatSpawner.BSState.OFF)
+        {
+            rushModeBatSpawner.Tick();
+            rushModeBatSpawner.WhileBatsAreLiving();
+            //Debug.Log(rushModeBatSpawner.State + " " + rushModeBatSpawner.Timer);
+            rushModeBatSpawner.GiveBatStatus();
+        }
+    }
+
+    public GameObject InstantAutoBat(GameObject inPrefab, Vector2 inTransform)
+    {
+        GameObject prefab = Instantiate(inPrefab, inTransform, Quaternion.identity);
+        prefab.transform.parent = GameController.main.batSpawnerTransform;
+        return prefab;
+    }
+
+    public void DestroyBat(GameObject bat)
+    {
+        Destroy(bat);
+    }
 
     public void DistanceToDanger()
     {
@@ -175,6 +213,7 @@ public class GameController : MonoBehaviour {
         {
             // BatSpawner checks if the any of the Bat(s) are damageable
             // BatSpawner.CheckForHit();
+            rushModeBatSpawner.CheckForHit();
 
             return 0;
         }
@@ -263,5 +302,15 @@ public class GameController : MonoBehaviour {
     {
         OnRestart();
         GetComponentsInChildren<AudioSource>()[1].Play();
+    }
+
+    public void PlayerPlayGettingHit()
+    {
+        player.PlayGettingHit();
+    }
+
+    public void PlayerPlayHit()
+    {
+        player.PlayHit();
     }
 }
